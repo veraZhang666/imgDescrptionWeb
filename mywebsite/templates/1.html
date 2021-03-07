@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <style type="text/css">
+    #fileimg{
+        width:400px;
+        height:400px;
+        border:1px solid #eee;
+    }
+    .Btn{
+        width:200px;
+        font-size: large;
+        background: #4bcd90;
+        border: 2px;
+    }
+    .box{
+        background: antiquewhite ;
+        height: 400px;
+        width: 400px;
+        border-color: chocolate;
+        border-width: thick;
+        display: flex;
+    }
+
+
+
+    </style>
+</head>
+<body>
+
+<div >
+    <div class="box">
+        <label for="file">Picture name :</label>
+        <input type="file" id="picture" style="" accept="image/png,image/jpeg" >
+        <div class="box" style="margin-top: 20px"><img src="" alt="" id="fileimg"></div>
+    </div>
+
+
+</div>
+
+
+</body>
+
+<script>
+
+    $("#picture").change(function(){
+        var file = $("#picture")[0].files[0]; //如果后台用 MultipartFile处理，直接传给后台file
+        if (window.FileReader) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            //监听文件读取结束后事件
+            reader.onloadend = function (e) {
+                $(".box").find('img').attr("src",e.target.result);    //e.target.result就是最后的路径地址(base 64)
+                alert(e.target.result);
+            };
+        }
+    });
+
+
+
+</script>
+
+
+</html>

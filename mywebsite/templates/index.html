@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/static/css/boxSize.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+</head>
+
+<body>
+<div class="wrap">
+    <div class="div1">
+    <h1 >Situational  Analysis From Images Playground</h1>
+    <label>----------------------------------------------</label>
+    <p>By Dheeraj Reddy, Purnima Yadav,Juan Zhang,Ayush Parolia</p>
+    </div>
+
+     <div class="picDesdiv"  align="center"> <h2 >Picture Description </h2></div>
+
+    <div class="div2"  >
+         <div class="smallbox">
+         <img id='img1' src="/static/images/cat.png" alt="pls upload" class="imgsize" >
+          <div class="btndiv">
+            <label>Discription:</label>
+              <p id="des1">...</p>
+             <input type="file" id="filebtn1" style="" accept="image/png,image/jpeg" >
+             <button id="detect1" value="Detect">Detect</button>
+          </div>
+        </div>
+          <div class="smallbox">
+        <img id ='img3' src="/static/images/cat.png" alt="pls upload" class="imgsize" >
+            <div class="btndiv">
+            <label>Discription:</label>
+              <p>...</p>
+             <input type="file" id="filebtn3" style="" accept="image/png,image/jpeg" >
+             <button value="Detect">Detect</button>
+          </div>
+        </div>
+          <div class="smallbox">
+        <img id = 'img2' src="/static/images/cat.png" alt="pls upload" class="imgsize" >
+            <div class="btndiv">
+            <label>Discription:</label>
+              <p>...</p>
+             <input type="file" id="filebtn2" style="" accept="image/png,image/jpeg" >
+             <button value="Detect">Detect</button>
+          </div>
+        </div>
+
+    </div>
+
+    <div class="div3">
+        <div class="vidowrap"  align="center">
+                <h2 >Vedio stream detection </h2>
+                <div><img src="/static/images/work.png"><div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+</body>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function (){
+         $("#filebtn1").change(function(){
+        var file = $("#filebtn1")[0].files[0]; //如果后台用 MultipartFile处理，直接传给后台file
+        if (window.FileReader) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            //监听文件读取结束后事件 传图片到服务器
+            reader.onloadend = function (e) {
+                $('#img1').attr("src",e.target.result);    //e.target.result就是最后的路径地址(base 64)
+
+                // alert(e.target.result);
+                var info = {pic:e.target.result }
+                $.ajax({
+                    url:'/uploadpic/',
+                    method:'POST',
+                    data:info,
+                    success:
+                    function (response){
+                        console.log(response);
+                    }
+                });
+
+            };
+        }
+    });
+
+         $("#filebtn2").change(function(){
+        var file = $("#filebtn2")[0].files[0]; //如果后台用 MultipartFile处理，直接传给后台file
+        if (window.FileReader) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            //监听文件读取结束后事件
+            reader.onloadend = function (e) {
+                $('#img2').attr("src",e.target.result);    //e.target.result就是最后的路径地址(base 64)
+                alert(e.target.result);
+            };
+        }
+    });
+
+         $("#filebtn3").change(function(){
+        var file = $("#filebtn3")[0].files[0]; //如果后台用 MultipartFile处理，直接传给后台file
+        if (window.FileReader) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            //监听文件读取结束后事件
+            reader.onloadend = function (e) {
+                $('#img3').attr("src",e.target.result);    //e.target.result就是最后的路径地址(base 64)
+                alert(e.target.result);
+            };
+        }
+    });
+         //从服务器拿来图片bs64
+         $('#detect1').click(function (){
+         //    get bouding box pic,
+             var head = 'data:image/jpeg;base64,';
+
+             $.ajax({
+                 url:"/returnpic/",
+                 method:'get',
+                 dataType:"json",
+                 contentType:"application/json",
+                 data:null,
+                 success:
+                 function (response){
+                     var bs64_str = ''
+                     var description = ''
+                     $.each(response,function (i,item){ //  目前字典列表只有一个
+                         bs64_str = item.pic_bs64 // [{"pic_bs64":''}]
+                         description = item.description
+                     });
+                    $('#img1').attr('src',head+bs64_str);
+                    $('#des1').text(description)
+                     $('#des1').css('color','blue');
+
+                 }
+
+             });
+
+
+
+         });
+
+    });
+
+
+
+
+
+
+</script>
+
+
+</html>
